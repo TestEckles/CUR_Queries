@@ -1,0 +1,21 @@
+SELECT 
+    line_item_resource_id AS InstanceID,
+    product_instance_type AS InstanceType,
+    SUM(line_item_usage_amount) AS TotalUsageHours,
+    SUM(line_item_unblended_cost) AS TotalCost,
+    line_item_usage_account_id AS AccountID
+FROM 
+    cur
+WHERE 
+    product_product_family = 'Compute Instance'  -- Ensures we are focused on EC2
+    AND product_servicecode = 'AmazonEC2'
+    AND line_item_resource_id IS NOT NULL  -- Ensures the instance ID is populated
+    AND line_item_usage_type LIKE '%BoxUsage%'  -- Focus on running instances (BoxUsage indicates usage)
+    AND line_item_usage_start_date >= DATE '2024-09-01'
+    AND line_item_usage_end_date <= DATE '2024-09-30'
+GROUP BY 
+    line_item_resource_id, product_instance_type, line_item_usage_account_id
+HAVING 
+    SUM(line_item_usage_amount) < 100  -- Instances with low usage (adjust as needed)
+ORDER BY 
+    TotalCost DESC;
