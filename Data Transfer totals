@@ -1,0 +1,73 @@
+SELECT 
+    line_item_usage_account_id,
+    DATE_FORMAT((line_item_usage_start_date),'%Y-%m-01') AS month_line_item_usage_start_date, 
+    line_item_product_code,
+    product_product_family,
+    product_region,
+    line_item_line_item_description,
+    line_item_resource_id,
+    line_item_usage_type,
+    SUM(line_item_unblended_cost) AS sum_line_item_unblended_cost
+FROM 
+    cur
+WHERE 
+    year = '2024' 
+    AND month BETWEEN '7' AND '9'
+    AND line_item_usage_type IN (
+        'AP-DataTransfer-Out-Bytes', 'AP-DataTransfer-Out-OBytes',
+        'APN1-DataTransfer-In-Bytes', 'APN1-DataTransfer-Out-Bytes',
+        'APN1-DataTransfer-Regional-Bytes', 'APN1-DataTransfer-xAZ-In-Bytes',
+        'APN1-DataTransfer-xAZ-Out-Bytes', 'APN2-DataTransfer-In-Bytes',
+        'APN2-DataTransfer-Out-Bytes', 'APN3-DataTransfer-In-Bytes',
+        'APN3-DataTransfer-Out-Bytes', 'APN3-DataTransfer-xAZ-In-Bytes',
+        'APN3-DataTransfer-xAZ-Out-Bytes', 'APS1-DataTransfer-In-Bytes',
+        'APS1-DataTransfer-Out-Bytes', 'APS1-DataTransfer-Regional-Bytes',
+        'APS1-DataTransfer-xAZ-Out-Bytes', 'APS2-DataTransfer-In-Bytes',
+        'APS2-DataTransfer-Out-Bytes', 'APS2-DataTransfer-Regional-Bytes',
+        'APS2-DataTransfer-xAZ-In-Bytes', 'APS2-DataTransfer-xAZ-Out-Bytes',
+        'APS3-DataTransfer-In-Bytes', 'APS3-DataTransfer-Out-Bytes',
+        'APS3-DataTransfer-Regional-Bytes', 'APS3-DataTransfer-xAZ-In-Bytes',
+        'APS3-DataTransfer-xAZ-Out-Bytes', 'AU-DataTransfer-Out-Bytes',
+        'AU-DataTransfer-Out-OBytes', 'CA-DataTransfer-Out-Bytes',
+        'CA-DataTransfer-Out-OBytes', 'CAN1-DataTransfer-In-Bytes',
+        'CAN1-DataTransfer-Out-Bytes', 'DataTransfer-In-ABytes',
+        'DataTransfer-In-Bytes', 'DataTransfer-Out-Bytes',
+        'DataTransfer-Regional-Bytes', 'EU-DataTransfer-In-Bytes',
+        'EU-DataTransfer-Out-Bytes', 'EU-DataTransfer-Out-OBytes',
+        'EUC1-DataTransfer-In-Bytes', 'EUC1-DataTransfer-Out-Bytes',
+        'EUC1-DataTransfer-Regional-Bytes', 'EUC1-DataTransfer-xAZ-In-Bytes',
+        'EUC1-DataTransfer-xAZ-Out-Bytes', 'EUC1-DataTransferOut',
+        'EUC2-DataTransfer-Out-Bytes', 'EUN1-DataTransfer-In-Bytes',
+        'EUN1-DataTransfer-Out-Bytes', 'EUW2-DataTransfer-In-Bytes',
+        'EUW2-DataTransfer-Out-Bytes', 'EUW3-DataTransfer-In-Bytes',
+        'EUW3-DataTransfer-Out-Bytes', 'Global-DataTransfer-Shield-Bytes',
+        'IN-DataTransfer-Out-Bytes', 'IN-DataTransfer-Out-OBytes',
+        'JP-DataTransfer-Out-Bytes', 'JP-DataTransfer-Out-OBytes',
+        'ME-DataTransfer-Out-Bytes', 'ME-DataTransfer-Out-OBytes',
+        'SA-DataTransfer-Out-Bytes', 'SA-DataTransfer-Out-OBytes',
+        'SAE1-DataTransfer-In-Bytes', 'SAE1-DataTransfer-Out-Bytes',
+        'US-DataTransfer-Out-Bytes', 'US-DataTransfer-Out-OBytes',
+        'USE1-DataTransfer-AZ-Out-Bytes', 'USE1-DataTransfer-Shield-Bytes',
+        'USE1-DataTransfer-xAZ-In-Bytes', 'USE1-DataTransfer-xAZ-Out-Bytes',
+        'USE1-DataTransferOut', 'USE2-DataTransfer-In-Bytes',
+        'USE2-DataTransfer-Out-Bytes', 'USE2-DataTransfer-Regional-Bytes',
+        'USE2-DataTransfer-xAZ-In-Bytes', 'USE2-DataTransfer-xAZ-Out-Bytes',
+        'USW1-DataTransfer-In-Bytes', 'USW1-DataTransfer-Out-Bytes',
+        'USW2-DataTransfer-In-Bytes', 'USW2-DataTransfer-Out-Bytes',
+        'USW2-DataTransfer-Regional-Bytes', 'USW2-DataTransfer-xAZ-In-Bytes',
+        'USW2-DataTransfer-xAZ-Out-Bytes', 'ZA-DataTransfer-Out-Bytes',
+        'ZA-DataTransfer-Out-OBytes'
+    )
+    AND line_item_line_item_type = 'Usage'
+    AND line_item_unblended_cost > 0  -- Exclude rows where cost is zero or less
+GROUP BY  
+    line_item_usage_account_id, 
+    DATE_FORMAT((line_item_usage_start_date),'%Y-%m-01'), 
+    line_item_product_code,
+    product_product_family,
+    product_region,
+    line_item_line_item_description,
+    line_item_resource_id,
+    line_item_usage_type
+ORDER BY 
+    sum_line_item_unblended_cost DESC;
