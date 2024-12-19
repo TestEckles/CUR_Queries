@@ -1,0 +1,25 @@
+SELECT DISTINCT
+    line_item_usage_account_id,  -- The account ID for each resource
+    line_item_resource_id,       -- The unique resource ID
+    "resource_tags_user_name" "resource_name",  -- The resource name tag
+    "resource_tags_user_application_code" "application_code",
+    "resource_tags_user_application_name" "application_name",
+    "resource_tags_user_map_migrated" "map_migrated",
+    "resource_tags_user_product_tower" "product_tower",
+    "resource_tags_user_environment" "environment",
+    "resource_tags_user_support_contact" "support_contact",
+    "resource_tags_user_backup_plan" "backup_plan",
+    "resource_tags_user_application_owner" "application_owner",
+    "resource_tags_user_automation" "automation",
+    "resource_tags_user_description" "description",
+    "resource_tags_user_domain" "domain",
+    "resource_tags_user_map_migrated_app" "map_migrated_app",
+    "resource_tags_user_os" "os",
+    "resource_tags_user_patch_group" "patch_group",
+    "resource_tags_user_git" "git"
+FROM
+    "cur"
+WHERE
+    product_servicecode = 'AmazonApiGateway'
+ORDER BY
+    line_item_usage_account_id, line_item_resource_id;
