@@ -1,0 +1,16 @@
+SELECT
+    DATE_FORMAT(line_item_usage_start_date, '%Y-%m') AS billing_month, -- Derive the billing month
+    line_item_resource_id AS resource_id,
+    line_item_product_code AS service,
+    SUM(line_item_unblended_cost) AS total_cost
+FROM
+    cur -- Replace with your actual CUR table name
+WHERE
+    CAST(line_item_usage_start_date AS DATE) >= DATE '2024-09-01'
+    AND CAST(line_item_usage_start_date AS DATE) <= DATE '2024-09-30'
+GROUP BY
+    DATE_FORMAT(line_item_usage_start_date, '%Y-%m'), -- Match derived column
+    line_item_resource_id,
+    line_item_product_code
+ORDER BY
+    total_cost DESC;
