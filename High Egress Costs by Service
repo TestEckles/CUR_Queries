@@ -1,0 +1,19 @@
+ SELECT
+    line_item_product_code AS service,
+    line_item_resource_id AS resource_id, -- Added resource ID
+    line_item_usage_type AS egress_type,
+    product_region AS region,
+    SUM(line_item_unblended_cost) AS total_cost
+FROM
+    cur
+WHERE
+    line_item_usage_type LIKE '%DataTransfer-Out%' -- Filter for outbound data transfer
+    AND CAST(line_item_usage_start_date AS DATE) >= DATE '2024-09-01'
+    AND CAST(line_item_usage_start_date AS DATE) <= DATE '2024-09-30'
+GROUP BY
+    line_item_product_code,
+    line_item_resource_id, -- Include resource ID in grouping
+    line_item_usage_type,
+    product_region
+ORDER BY
+    total_cost DESC;
