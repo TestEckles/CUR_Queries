@@ -1,0 +1,18 @@
+SELECT
+    DATE_FORMAT(line_item_usage_start_date, '%Y-%m') AS billing_month,
+    product_region AS region,
+    line_item_usage_type AS data_transfer_type,
+    SUM(line_item_unblended_cost) AS total_cost
+FROM
+    cur
+WHERE
+    line_item_product_code = 'AmazonEKS'
+    AND line_item_usage_type LIKE '%DataTransfer%' -- Focus on data transfer
+    AND CAST(line_item_usage_start_date AS DATE) >= DATE '2024-09-01'
+    AND CAST(line_item_usage_start_date AS DATE) <= DATE '2024-09-30'
+GROUP BY
+    DATE_FORMAT(line_item_usage_start_date, '%Y-%m'),
+    product_region,
+    line_item_usage_type
+ORDER BY
+    total_cost DESC;
