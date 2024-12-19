@@ -1,0 +1,47 @@
+SELECT DISTINCT
+    line_item_resource_id AS lambda_function_arn,
+    product_product_name AS lambda_function_name,
+    product_region AS region,
+    "resource_tags_user_name" AS resource_name,  -- The resource name tag
+    "resource_tags_user_application_code" AS application_code,
+    "resource_tags_user_application_name" AS application_name,
+    "resource_tags_user_map_migrated" AS map_migrated,
+    "resource_tags_user_product_tower" AS product_tower,
+    "resource_tags_user_environment" AS environment,
+    "resource_tags_user_support_contact" AS support_contact,
+    "resource_tags_user_backup_plan" AS backup_plan,
+    "resource_tags_user_application_owner" AS application_owner,
+    "resource_tags_user_automation" AS automation,
+    "resource_tags_user_description" AS description,
+    "resource_tags_user_domain" AS domain,
+    "resource_tags_user_map_migrated_app" AS map_migrated_app,
+    "resource_tags_user_os" AS os,
+    "resource_tags_user_patch_group" AS patch_group,
+    "resource_tags_user_git" AS git,
+    SUM(line_item_unblended_cost) AS total_cost -- Total cost for the Lambda function
+FROM
+    "cur"
+WHERE
+    line_item_product_code = 'AWSLambda'
+GROUP BY
+    line_item_resource_id,
+    product_product_name,
+    product_region,
+    "resource_tags_user_name",
+    "resource_tags_user_application_code",
+    "resource_tags_user_application_name",
+    "resource_tags_user_map_migrated",
+    "resource_tags_user_product_tower",
+    "resource_tags_user_environment",
+    "resource_tags_user_support_contact",
+    "resource_tags_user_backup_plan",
+    "resource_tags_user_application_owner",
+    "resource_tags_user_automation",
+    "resource_tags_user_description",
+    "resource_tags_user_domain",
+    "resource_tags_user_map_migrated_app",
+    "resource_tags_user_os",
+    "resource_tags_user_patch_group",
+    "resource_tags_user_git"
+ORDER BY
+    lambda_function_name;
