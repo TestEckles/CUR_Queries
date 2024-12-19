@@ -1,0 +1,3 @@
+SELECT DISTINCT product_servicecode
+FROM cur
+ORDER BY product_servicecode;
