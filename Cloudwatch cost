@@ -1,0 +1,17 @@
+SELECT
+    line_item_usage_account_id AS account_id,
+    line_item_usage_type AS usage_type,
+    line_item_resource_id AS resource_name, -- Resource name (e.g., log group name)
+    SUM(line_item_unblended_cost) AS total_cost
+FROM
+    cur
+WHERE
+    line_item_product_code = 'AmazonCloudWatch'
+    AND CAST(line_item_usage_start_date AS DATE) >= DATE '2024-09-01'
+    AND CAST(line_item_usage_end_date AS DATE) <= DATE '2024-09-30'
+GROUP BY
+    line_item_usage_account_id,
+    line_item_usage_type,
+    line_item_resource_id
+ORDER BY
+    total_cost DESC;
