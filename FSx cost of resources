@@ -1,0 +1,17 @@
+SELECT
+    line_item_resource_id,
+    product_file_system_type,
+    line_item_usage_account_id,  -- Account ID
+    SUM(line_item_unblended_cost) AS ResourceCost
+FROM
+    cur
+WHERE
+    line_item_product_code = 'AmazonFSx'
+    AND CAST(line_item_usage_start_date AS DATE) >= DATE '2024-09-01'
+    AND CAST(line_item_usage_end_date AS DATE) <= DATE '2024-09-30'
+GROUP BY
+    line_item_usage_account_id,  -- Account ID
+    product_file_system_type,
+    line_item_resource_id
+ORDER BY
+    ResourceCost DESC;
